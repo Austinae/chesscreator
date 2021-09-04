@@ -1,5 +1,6 @@
 # chesscreator
 **Version 1.0.0**
+![Chesscreator logo][chesscreator]
 
 <br />
 
@@ -126,3 +127,4 @@ I would like to mention that jquery is being used, read more about their license
 [class]: https://i.ibb.co/1GgPTTX/Capture.jpg
 [subsizeX]: https://i.ibb.co/0tmbZRP/Capture.jpg
 [coordinates]: https://i.ibb.co/W61xmk6/Capture.jpg
+[chesscreator]: https://i.ibb.co/c2rsWsS/chesscreator.png
