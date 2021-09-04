@@ -2,18 +2,28 @@
 <html>
 <head>
 	<title>Test</title>
-	<link rel="stylesheet" type="text/css" href="style.css">
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	<script type="text/javascript" src="chess.js"></script>
+	<!-- <script type="text/javascript" src="chesscreator_international.js"></script> -->
+	<!-- <script type="text/javascript" src="chesscreator_xiangqi.js"></script> -->
+	<script type="text/javascript" src="chesscreator.js"></script>
+	<style type="text/css">
+		* {
+			margin:0;
+			padding:0;
+			background-color: rgb(8, 23, 65);
+		}
+
+		#chesscreator{
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			margin-top: -200px;
+			margin-left: -200px;
+		}
+	</style>
 </head>
 <body>
-	<canvas id="board">Canvas is not supported.</canvas>
-	<div id="player1">
-		<div id="dataplayer1" class="gamestyle"></div>
-	</div>
-	<div id="player2">
-		<div id="dataplayer2" class="gamestyle"></div>
-	</div>	
+	<canvas id="chesscreator">Canvas is not supported.</canvas>
 </body>
 </html>
 

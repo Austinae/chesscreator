@@ -1,13 +1,42 @@
 $( document ).ready(function() { 
 
-    var [eye, canvas, letters, eyeView, variant, busername, brw, wusername, wrw, opponentDiv, playerDiv, opponentData, playerData, nbSqPSideX, nbSqPSideY, sqSize, board, hasMove, peice, kingPosition, newPieceMoves, isStale, occupied, mySquares, hisSquares, promoteConfig] = ["white", document.getElementById("board"), "abcdefghijklmnopqrstuvwxyz", "white", 1, "Black", 1000, "White", 1000, document.getElementById("player1"), document.getElementById("player2"), document.getElementById("dataplayer1"), document.getElementById("dataplayer2")];
+    var [
+        eye, //which player are you playing (black/white)
+        eyeView, //which perspective are you watching from (black/white)
+        canvas, //the canvas
+        alphabet,
+        nbSqPSideX, 
+        nbSqPSideY, 
+        sqSize, 
+        board, 
+        hasMove, 
+        peice, 
+        kingPosition, 
+        newPieceMoves, 
+        isStale, 
+        occupied, 
+        mySquares, 
+        hisSquares, 
+        promoteConfig
+        ] 
+        = 
+        [
+        "white", 
+        "white",
+        document.getElementById("chesscreator"), 
+        "abcdefghijklmnopqrstuvwxyz"
+    ];
 
+    var boardPixelsHorizontal = 10000; //warning: avoid going under canvas css width as canvas scaling pixelates images
+    var boardPixelsVertical = 10000;
 
-    window.onbeforeunload = ()=>{alert("You are leaving the page");return undefined;}
+    $("#chesscreator").css({
+        'width':'400px',
+        'height': '400px'
+    })
 
     // Create context from canvas
     var ctx = canvas.getContext("2d")
-
 
     function isStrInArray(array, value) { //returns true if e.g isStrInArray(["a1"], "a1")
         return array.indexOf(value) > -1;
@@ -56,19 +85,18 @@ $( document ).ready(function() {
         var number = str.substring(1)-1;
 
         if(eyeView=="white"){
-            letter = letters.indexOf(letter);
+            letter = alphabet.indexOf(letter);
             number = -number + nbSqPSideY - 1;
         }
         else{
-            letter = letters.indexOf(letter);
+            letter = alphabet.indexOf(letter);
             letter = -letter + nbSqPSideX - 1;
         }
         return [letter, number];
     }
 
-
     function strToPos(str){ //returns coord position from string
-        return [letters.indexOf(str[0]), str.substring(1)-1];
+        return [alphabet.indexOf(str[0]), str.substring(1)-1];
     }
     
     function drawPosToStr(pos) { //returns string depending on perspective from coord position
@@ -79,13 +107,12 @@ $( document ).ready(function() {
                 pos[0] = -pos[0]  + nbSqPSideX - 1
                 pos[1] += 1;
             }
-            return letters[pos[0]]+pos[1];
+            return alphabet[pos[0]]+pos[1];
     }
 
     function posToStr(pos){ //return string from coord position
-        return letters[pos[0]]+(pos[1]+1)
+        return alphabet[pos[0]]+(pos[1]+1)
     }
-   
 
     function deepCopyState(state){ //returns deep copy of board state
         var newState = {"gameMode":state.gameMode,"moveNb":state.moveNb,"check":state.check,"lastMove":state.lastMove, pieces:[]}
@@ -205,7 +232,6 @@ $( document ).ready(function() {
         }
     }
 
-
     function drawSbPieceAndDecoration(spanElement, nbDeadPieces, owner, type, colour, getSpriteCoord){ //draws pieces on sideboard
         if(nbDeadPieces[owner][type]!=0){
             spanElement.parentNode.style.display = "block";
@@ -239,8 +265,8 @@ $( document ).ready(function() {
         var configSquares;
 
         // Clearing and setting background
-        ctx.clearRect(0, 0, board.cwidth, board.cheight); //clear canvas
-        ctx.drawImage(board.images.board, 0, 0, board.cwidth, board.cheight); //background
+        ctx.clearRect(0, 0, boardPixelsHorizontal, boardPixelsVertical); //clear canvas
+        ctx.drawImage(board.images.board, 0, 0, boardPixelsHorizontal, boardPixelsVertical); //background
         
 
         // Previous move
@@ -281,7 +307,7 @@ $( document ).ready(function() {
         if(board.promoting){ 
             ctx.globalAlpha = 0.7;
             ctx.fillStyle = "#4d0000"; 
-            ctx.fillRect(0, 0, board.cwidth, board.cheight); //hide background
+            ctx.fillRect(0, 0, boardPixelsHorizontal, boardPixelsVertical); //hide background
             ctx.globalAlpha = 1.0;
 
             configSquares = getPromotedStrs(board.promotingSquare, board.promotionConfigs.length);
@@ -290,31 +316,28 @@ $( document ).ready(function() {
                 drawPiece(ctx, board, board.coordinates[board.promotionConfigs[pConfig].spriteCoord], strToDrawPos(configSquares[pConfig]), sqSize);
             }
         }
-
     }
-
 
     class Board{ //superclass that holds board variables and validates board events
         constructor(){
-            this.nbSqPSideX;
-            this.nbSqPSideY;
-            this.images = {
+            this.nbSqPSideX; //number of squares on the horizontal axes
+            this.nbSqPSideY; //number of squares on the vertical axes
+            this.images = { //file locations for board and piece images
                 board: null,
                 pieces: null
             };
-            this.moveNb = 0;
-            this.gameStates = [];
-            this.focus = {
+            this.moveNb = 0; //current game move
+            this.eyeNb = 0; //game move being drawn onto the canvas
+            this.gameStates = []; //set of all moves and piece positions
+            this.moves = {}; //set of valid squares which piece can move to (generated before canvas is drawn)
+            this.focus = { //structure which holds data to show user which piece is selected and where it can be moved
                 piece: null,
                 validSquares: null
             };
-            this.eyeNb = 0;
-            this.moves = {};
-            this.promotionConfigs = [];
-            this.promotingChoice = [];
-            this.promoting = false;
-            this.promotingSquare;
-
+            this.promotionConfigs = []; //set of promotion rules applied to each piece
+            this.promotingChoice = []; //set of promotion choices if piece dropped in promotion zone
+            this.promoting = false; //false if piece isn't being promoted, true otherwise
+            this.promotingSquare; //keeps track of which square promoted piece must be dropped to
         }
 
         getSquareOccupancy(gamestate, pov){ //returns two arrays that hold information about which pieces are actively on the board
@@ -350,9 +373,6 @@ $( document ).ready(function() {
                 if(piece.colour == eye && piece.alive){ //if piece belongs to the user whos turn it is to play
                     this.moves[piece.pid] = this.getPieceMoves(piece, myOccupiedSquares, opponentOccupiedSquares); //generate positions
                 }
-                else if(piece.colour == eye && variant==3 && piece.alive == false){
-                    this.moves[piece.pid] = this.getPieceMoves(piece, myOccupiedSquares, opponentOccupiedSquares); //generate positions
-                }
             }
 
             var newMoves = {};
@@ -374,38 +394,7 @@ $( document ).ready(function() {
                     newState.pieces[pIndex].alive = true;
 
                     if(isKingInCheck(this, newState, eye) == false){ //if, after moving the piece to the given square the king is not under attack by any opponent piece then it is valid
-                        if(variant==2){ //xiangqi, if, after moving the piece to the given square the king is not facing the other king then it is valid
-                            var wKingPos; 
-                            var bKingPos; 
-                            var occ = this.getSquareOccupancy(newState, eye);
-                            var allBoardPiecesPos = occ[0].concat(occ[1]);
-                            var isValid = false;
-
-                            for(var pindex in newState.pieces){
-                                if(newState.pieces[pindex].pid == 4){
-                                    wKingPos = newState.pieces[pindex].positionCoord;
-                                }
-                                if(newState.pieces[pindex].pid == 20){
-                                    bKingPos = newState.pieces[pindex].positionCoord;
-                                    break;
-                                }
-                            }
-                            if(wKingPos[0]==bKingPos[0]){
-                                for(var i=wKingPos[1]+1;i<bKingPos[1];i++){
-                                    if(isArrayInArray(allBoardPiecesPos, [wKingPos[0], i])){
-                                        isValid = true;
-                                        break;
-                                    }
-                                }
-                                if(isValid){
-                                    newMove.canMove.push(move);
-                                }
-                            }else{
-                                newMove.canMove.push(move);
-                            }
-                        }else{
-                            newMove.canMove.push(move);
-                        }
+                        newMove.canMove.push(move);
                     }
                 }
                 for(var mIndex in this.moves[pIndex].canAttack){ //for each capture move
@@ -425,36 +414,7 @@ $( document ).ready(function() {
                     newState.pieces[pIndex].positionCoord = strToPos(move);
 
                     if(isKingInCheck(this, newState, eye) == false){ //if, after moving the piece to the given square the king is not under attack by any opponent piece then it is valid
-                        if(variant==2){ //xiangqi, if, after moving the piece to the given square the king is not facing the other king then it is valid
-                            var wKingPos; 
-                            var bKingPos; 
-                            var allBoardPiecesPos = opponentOccupiedSquares.concat(myOccupiedSquares);
-                            var isValid = false;
-
-                            for(var pindex in newState.pieces){
-                                if(newState.pieces[pindex].pid == 4){
-                                    wKingPos = newState.pieces[pindex].positionCoord;
-                                }
-                                if(newState.pieces[pindex].pid == 20){
-                                    bKingPos = newState.pieces[pindex].positionCoord;
-                                    break;
-                                }
-                            }
-                            if(wKingPos[0]==bKingPos[0]){
-                                for(var i=wKingPos[1]+1;i<bKingPos[1];i++){
-                                    if(isArrayInArray(allBoardPiecesPos, [wKingPos[0], i])){
-                                        isValid = true;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            if(isValid){
-                                newMove.canAttack.push(move);
-                            }
-                        }else{
-                            newMove.canAttack.push(move);
-                        }
+                        newMove.canAttack.push(move);
                     }
                 }
                 newMoves[pIndex] = newMove;
@@ -533,21 +493,17 @@ $( document ).ready(function() {
         }
     }
 
-
     class InternationalBoard extends Board { //holds information about the western chess pieces and rules
         constructor() {
             super();
-            this.variant = 1;
             this.type = "international";
-            this.cwidth = 400;
-            this.cheight = 400;
             this.nbSqPSideX = 8;
             this.nbSqPSideY = 8;
             this.subSizeX = 45;
             this.subSizeY = 45;
             this.imageSrcs = [
-                "images/international/pieces.svg",
-                "images/international/board.png"
+                "./images/international/pieces.svg",
+                "./images/international/board.png"
             ];
             this.coordinates = { //holds information about where the piece sprites are from the images file
                 0: [0, 0], //king white (w)
@@ -605,6 +561,7 @@ $( document ).ready(function() {
                         {"pid":31,"alive":true,"numberMoves":0,"positionStr":"h7","positionCoord":[7,6],"originalType":"pawn","type":"pawn","colour":"black","spriteCoord":11}
                     ]
             }
+            this.gameStates.push(this.initGameState);
         }
 
         getPromotionConfigs(piece, str){ //holds information about piece promotions
@@ -891,9 +848,6 @@ $( document ).ready(function() {
         }
     }
 
-
-
-
     function loader(board, loadImg, allDone) { //used for executing the code only once images have been received
         var count = board.imageSrcs.length;
         var finishedLoadImg = (board, i)=>{
@@ -929,9 +883,10 @@ $( document ).ready(function() {
         img.src = board.imageSrcs[i];
     } 
 
-    function getCursorPosition(event, canvas){ //gets cursor position when mouse is pressed on canvas
+    function getCursorPosition(event, nbSqPSideX){ //gets cursor position when mouse is pressed on canvas
         var rect = canvas.getBoundingClientRect();
-        var position = [Math.floor((event.clientX - rect.left)/sqSize), Math.floor((event.clientY - rect.top)/sqSize)];
+        var realSqSize = $("#chesscreator").width() / nbSqPSideX;
+        var position = [Math.floor((event.clientX - rect.left)/realSqSize), Math.floor((event.clientY - rect.top)/realSqSize)];
         return position
     }
 
@@ -943,9 +898,57 @@ $( document ).ready(function() {
         return (eye == (board.moveNb % 2 == 0 ? "white" : "black"));
     }
 
+    function keyDownUtils(e){ //used to navigate through gamestates and change point of view
+        if(board.focus.piece != null){
+                board.focus.piece = null;
+        }
+        switch (e.keyCode) {
+            //navigate through game states, up and right arrow keys to move forward, left and bottom to move backwards
+            case 37:
+                console.log("hey 37");
+                if(board.eyeNb>0){
+                    board.eyeNb -= 1;
+                }
+                draw(board, board.eyeNb);
+                break;
+            case 38:
+                console.log("hey 38");
+                if(board.eyeNb<board.moveNb){
+                    board.eyeNb += 1;
+                }
+                draw(board, board.eyeNb);
+                break;
+            case 39:
+                console.log("hey 39");
+                if(board.eyeNb<board.moveNb){
+                    board.eyeNb += 1;
+                }
+                draw(board, board.eyeNb);
+                break;
+            case 40:
+                console.log("hey 40");
+                if(board.eyeNb>0){
+                    board.eyeNb -= 1;
+                }
+                draw(board, board.eyeNb);
+                break;
+            //change point of view, w to see from white's pov, b to see from black's pov 
+            case 66:
+                console.log("hey 66");
+                eyeView = "black";
+                draw(board, board.eyeNb);
+                break;
+            case 87:
+                console.log("hey 87");
+                eyeView = "white";
+                draw(board, board.eyeNb);
+                break;
+        }
+    }
+
     function boardEventListener(board, event){ //important function, main board event listener
         if(isItMyTurn() && board.eyeNb == board.moveNb){ //player's turn, eye on correct gamestate, game is live
-            var pos = getCursorPosition(event, canvas);
+            var pos = getCursorPosition(event, board.nbSqPSideX);
             var str = drawPosToStr(pos);
             var piece;
             var configSquares;
@@ -1014,7 +1017,7 @@ $( document ).ready(function() {
                             }
 
                             if(board.moveNb!=0){ //en-passant in western chess
-                                if(newState.lastMove.piece.type=="pawn" && variant == 1 && piece.type == "pawn"){ 
+                                if(newState.lastMove.piece.type=="pawn" && piece.type == "pawn"){ 
                                     if((Math.abs(newState.lastMove.originCoord[1] - newState.lastMove.destinationCoord[1]))>1){
                                         if(newState.lastMove.piece.colour=="white"){
                                             if(posToStr([newState.lastMove.originCoord[0],newState.lastMove.originCoord[1]+1])==str){
@@ -1039,7 +1042,7 @@ $( document ).ready(function() {
                                 }
                             }
 
-                            if(piece.type=="king" && variant == 1){ //castling in western chess
+                            if(piece.type=="king"){ //castling in western chess
                                 var diffPos = strToPos(board.focus.piece.positionStr)[0]-strToPos(str)[0];
                                 if((Math.abs(diffPos))>1){
                                     if(piece.colour=="white"){
@@ -1133,7 +1136,7 @@ $( document ).ready(function() {
                     eyeView = returnOpponentEye(eyeView);
                     eye = returnOpponentEye(eye);
 
-                    dothis(board);
+                    startEngine(board);
                 }
                 else{
                     board.focus.piece = null;
@@ -1143,10 +1146,10 @@ $( document ).ready(function() {
         } 
     }
     
-    function dothis(board){
+    function startEngine(board){ //generate valid moves for each piece if game isn't stalemate/mate.
         hasMove = false;
         if(isItMyTurn()){
-            board.generateValidMoves();
+            board.generateValidMoves(); //generate valid moves
             for(var mIndex in board.moves){ //check if player has at least one move.
                 if(board.moves[mIndex].canMove.length!=0||board.moves[mIndex].canAttack.length!=0){
                     hasMove = true;
@@ -1192,81 +1195,23 @@ $( document ).ready(function() {
     }
 
 
-    switch(variant){ //displays game information based on variant type
-        case 1:
-            opponentData.style.width ="400px";
-            playerData.style.width ="400px";
-            if(eye=="white"){
-                opponentData.innerHTML = "&nbsp;&nbsp;"+wusername+" ("+wrw+")";
-                playerData.innerHTML = "&nbsp;&nbsp;"+busername+" ("+brw+")"; 
-            }else{
-                opponentData.innerHTML = "&nbsp;&nbsp;"+busername+" ("+brw+")";
-                playerData.innerHTML = "&nbsp;&nbsp;"+wusername+" ("+wrw+")";
-            }
-            board = new InternationalBoard(eyeView);
-            break;
-    }
+
+    board = new InternationalBoard(eyeView);
 
 
-    loader(board, loadImage, function () { //load images and only after they have been loaded, start execution of the following
-        canvas.width = board.cwidth;
-        canvas.height = board.cheight;
-        sqSize = board.cwidth / board.nbSqPSideX;
+    loader(board, loadImage, function () { //await images to load and populate board object start game logic
+       
+        //setup canvas with data from your chess variant class 
+        canvas.width = boardPixelsHorizontal;
+        canvas.height = boardPixelsVertical;
+        sqSize = boardPixelsHorizontal / board.nbSqPSideX;
         nbSqPSideX = board.nbSqPSideX;
         nbSqPSideY = board.nbSqPSideY;
+
+        startEngine(board);
         
-        opponentDiv.style.marginTop = "-255px"; 
-        playerDiv.style.marginTop = Math.round(board.cheight-195).toString()+"px"; 
-
-        var initGameState = 
-        {
-			"variant":"international",
-			"moveNb":0,
-			"check":false,
-			"lastMove":{"piece":null,"originStr":null,"originCoord":null,"destinationStr":null,"destinationCoord":null},
-			"pieces":
-				[
-					{"pid":0,"alive":true,"numberMoves":0,"positionStr":"a1","positionCoord":[0,0],"originalType":"rook","type":"rook","colour":"white","spriteCoord":8},
-					{"pid":1,"alive":true,"numberMoves":0,"positionStr":"b1","positionCoord":[1,0],"originalType":"knight","type":"knight","colour":"white","spriteCoord":6},
-					{"pid":2,"alive":true,"numberMoves":0,"positionStr":"c1","positionCoord":[2,0],"originalType":"bishop","type":"bishop","colour":"white","spriteCoord":4},
-					{"pid":3,"alive":true,"numberMoves":0,"positionStr":"d1","positionCoord":[3,0],"originalType":"queen","type":"queen","colour":"white","spriteCoord":2},
-					{"pid":4,"alive":true,"numberMoves":0,"positionStr":"e1","positionCoord":[4,0],"originalType":"king","type":"king","colour":"white","spriteCoord":0},
-					{"pid":5,"alive":true,"numberMoves":0,"positionStr":"f1","positionCoord":[5,0],"originalType":"bishop","type":"bishop","colour":"white","spriteCoord":4},
-					{"pid":6,"alive":true,"numberMoves":0,"positionStr":"g1","positionCoord":[6,0],"originalType":"knight","type":"knight","colour":"white","spriteCoord":6},
-					{"pid":7,"alive":true,"numberMoves":0,"positionStr":"h1","positionCoord":[7,0],"originalType":"rook","type":"rook","colour":"white","spriteCoord":8},
-					{"pid":8,"alive":true,"numberMoves":0,"positionStr":"a2","positionCoord":[0,1],"originalType":"pawn","type":"pawn","colour":"white","spriteCoord":10},
-					{"pid":9,"alive":true,"numberMoves":0,"positionStr":"b2","positionCoord":[1,1],"originalType":"pawn","type":"pawn","colour":"white","spriteCoord":10},
-					{"pid":10,"alive":true,"numberMoves":0,"positionStr":"c2","positionCoord":[2,1],"originalType":"pawn","type":"pawn","colour":"white","spriteCoord":10},
-					{"pid":11,"alive":true,"numberMoves":0,"positionStr":"d2","positionCoord":[3,1],"originalType":"pawn","type":"pawn","colour":"white","spriteCoord":10},
-					{"pid":12,"alive":true,"numberMoves":0,"positionStr":"e2","positionCoord":[4,1],"originalType":"pawn","type":"pawn","colour":"white","spriteCoord":10},
-					{"pid":13,"alive":true,"numberMoves":0,"positionStr":"f2","positionCoord":[5,1],"originalType":"pawn","type":"pawn","colour":"white","spriteCoord":10},
-					{"pid":14,"alive":true,"numberMoves":0,"positionStr":"g2","positionCoord":[6,1],"originalType":"pawn","type":"pawn","colour":"white","spriteCoord":10},
-					{"pid":15,"alive":true,"numberMoves":0,"positionStr":"h2","positionCoord":[7,1],"originalType":"pawn","type":"pawn","colour":"white","spriteCoord":10},
-					{"pid":16,"alive":true,"numberMoves":0,"positionStr":"a8","positionCoord":[0,7],"originalType":"rook","type":"rook","colour":"black","spriteCoord":9},
-					{"pid":17,"alive":true,"numberMoves":0,"positionStr":"b8","positionCoord":[1,7],"originalType":"knight","type":"knight","colour":"black","spriteCoord":7},
-					{"pid":18,"alive":true,"numberMoves":0,"positionStr":"c8","positionCoord":[2,7],"originalType":"bishop","type":"bishop","colour":"black","spriteCoord":5},
-					{"pid":19,"alive":true,"numberMoves":0,"positionStr":"d8","positionCoord":[3,7],"originalType":"queen","type":"queen","colour":"black","spriteCoord":3},
-					{"pid":20,"alive":true,"numberMoves":0,"positionStr":"e8","positionCoord":[4,7],"originalType":"king","type":"king","colour":"black","spriteCoord":1},
-					{"pid":21,"alive":true,"numberMoves":0,"positionStr":"f8","positionCoord":[5,7],"originalType":"bishop","type":"bishop","colour":"black","spriteCoord":5},
-					{"pid":22,"alive":true,"numberMoves":0,"positionStr":"g8","positionCoord":[6,7],"originalType":"knight","type":"knight","colour":"black","spriteCoord":7},
-					{"pid":23,"alive":true,"numberMoves":0,"positionStr":"h8","positionCoord":[7,7],"originalType":"rook","type":"rook","colour":"black","spriteCoord":9},
-					{"pid":24,"alive":true,"numberMoves":0,"positionStr":"a7","positionCoord":[0,6],"originalType":"pawn","type":"pawn","colour":"black","spriteCoord":11},
-					{"pid":25,"alive":true,"numberMoves":0,"positionStr":"b7","positionCoord":[1,6],"originalType":"pawn","type":"pawn","colour":"black","spriteCoord":11},
-					{"pid":26,"alive":true,"numberMoves":0,"positionStr":"c7","positionCoord":[2,6],"originalType":"pawn","type":"pawn","colour":"black","spriteCoord":11},
-					{"pid":27,"alive":true,"numberMoves":0,"positionStr":"d7","positionCoord":[3,6],"originalType":"pawn","type":"pawn","colour":"black","spriteCoord":11},
-					{"pid":28,"alive":true,"numberMoves":0,"positionStr":"e7","positionCoord":[4,6],"originalType":"pawn","type":"pawn","colour":"black","spriteCoord":11},
-					{"pid":29,"alive":true,"numberMoves":0,"positionStr":"f7","positionCoord":[5,6],"originalType":"pawn","type":"pawn","colour":"black","spriteCoord":11},
-					{"pid":30,"alive":true,"numberMoves":0,"positionStr":"g7","positionCoord":[6,6],"originalType":"pawn","type":"pawn","colour":"black","spriteCoord":11},
-					{"pid":31,"alive":true,"numberMoves":0,"positionStr":"h7","positionCoord":[7,6],"originalType":"pawn","type":"pawn","colour":"black","spriteCoord":11}
-				]
-		}
-
-        board.gameStates.push(initGameState);
-
-        dothis(board);
+        canvas.addEventListener('mousedown', (event)=>{boardEventListener(board, event)}); //start listening for events on the canvas
     })
 
-    if(eye == "white" || eye == "black"){ //adds listeners to board and sideboards (for shogi) only if user is player of the game 
-        canvas.addEventListener('mousedown', (event)=>{boardEventListener(board, event)});
-    }
+    document.addEventListener('keydown', keyDownUtils); 
 });
