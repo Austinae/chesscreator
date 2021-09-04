@@ -1,5 +1,8 @@
 # chesscreator
 **Version 1.0.0**
+
+<br />
+
 A javascript library to easily integrate a chess board with custom chess piece rules into your website. Working examples for international chess and xiangqi is included and can be used for that sole purpose if you wish as well.
 
 ---
@@ -27,7 +30,12 @@ The fun part: name your variant and replace every *yourchessvariant* with your c
 ### Step 2 - Images
 You need to populate the _images/yourchessvariant/_ folder with a _board_ image and a _pieces_ image.
 For simplicity group all your piece images in one file like so:
+
+<br />
+
 ![Image of pieces][pieces]
+
+<br />
 
 ### Step 3 - The script
 Open _chesscreator.js_, most functions can be ignored except those with stars, but out of curiosity this is file structure:
@@ -64,13 +72,30 @@ Open _chesscreator.js_, most functions can be ignored except those with stars, b
 
 ### Step 4 - Filling in the gaps
 Inside the YourChessVariant, enter all the necessary information about your variant:
-![Screenshot of YourChessVariant class][class]
-Notes:
+
 <br />
+![Screenshot of YourChessVariant class][class]
+
+Notes:
+
+<br />
+
 Note that subSizeX and subSizeY is the size of each piece inside the pieces concatenated image you have created, international chess example:  
+
+<br />
+
 ![What subSizeX means][subsizeX]
+
+<br />
+
 For the piece coordinates, it should follow this format:
+
+<br />
+
 ![The piece coordinates format][coordinates]
+
+<br />
+
 To add more complex logic you can modify the main Board class and the boardEventListener to control more advanced piece moves
 
 
