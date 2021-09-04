@@ -74,7 +74,10 @@ Open _chesscreator.js_, most functions can be ignored except those with stars, b
 Inside the YourChessVariant, enter all the necessary information about your variant:
 
 <br />
+
 ![Screenshot of YourChessVariant class][class]
+
+<br />
 
 Notes:
 
