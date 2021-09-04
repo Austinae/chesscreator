@@ -27,6 +27,10 @@ $( document ).ready(function() {
         "abcdefghijklmnopqrstuvwxyz"
     ];
 
+    // 
+    // All functions related to drawing elements on the canvas
+    // 
+
     //warning: 
     //avoid going under canvas css width as canvas scaling pixelates images
     //make sure that horizontal and vertical match scale of your board, if number of squares horizontally and vertically are equal keep as such however change otherwise
@@ -116,69 +120,6 @@ $( document ).ready(function() {
 
     function posToStr(pos){ //return string from coord position
         return alphabet[pos[0]]+(pos[1]+1)
-    }
-
-    function deepCopyState(state){ //returns deep copy of board state
-        var newState = {"gameMode":state.gameMode,"moveNb":state.moveNb,"check":state.check,"lastMove":state.lastMove, pieces:[]}
-        for(var piece in state.pieces){
-            newState.pieces.push(
-                {
-                "pid": state.pieces[piece].pid,
-                "alive": state.pieces[piece].alive,
-                "numberMoves": state.pieces[piece].numberMoves,
-                "positionStr": state.pieces[piece].positionStr,
-                "positionCoord": state.pieces[piece].positionCoord,
-                "originalType": state.pieces[piece].originalType,
-                "type": state.pieces[piece].type,
-                "colour": state.pieces[piece].colour,
-                "spriteCoord": state.pieces[piece].spriteCoord
-            })  
-        }
-            return newState;
-    }
-
-    function isKingInCheck(board, state, colour){ //checks if king with in check, returns false or object {positionStr:value} if true, colour arg is the king's colour (w o)
-        var occupancy;
-        var isInCheck = false;
-        var kingPos;
-        var piece;
-        var moves;
-        var attackMove;
-
-        for(var pieceIndex in state.pieces){ //get king position 
-            piece = state.pieces[pieceIndex];
-            if(piece.colour == colour && piece.alive && piece.type=="king"){
-                kingPos = piece.positionStr;
-                break;
-            }
-        }
-
-        occupancy = board.getSquareOccupancy(state, returnOpponentEye(colour)); //get coords of all pieces on board
-
-        for(var pieceIndex in state.pieces){ //if piece can attack the king then it is in check
-            piece = state.pieces[pieceIndex];
-            if(piece.colour==returnOpponentEye(colour) && piece.alive){ 
-                moves = board.getPieceMoves(piece, occupancy[0], occupancy[1]); 
-                for(var moveIndex in moves.canAttack){ 
-                    attackMove = moves.canAttack[moveIndex];
-                    if(attackMove == kingPos){
-                        isInCheck=true;
-                        break;
-                    }
-                }
-            }
-            if(isInCheck==true){
-                break;
-            }
-        }
-
-        if(isInCheck){
-            return {
-                positionStr: kingPos
-            }
-        }else{
-            return false;
-        }
     }
 
     function drawPiece(context, board, s, d, sqSize, cwidth=null, cheight=null, degree=null, alpha=null){ //draws all motifs that appear on the canvas board object
@@ -320,6 +261,81 @@ $( document ).ready(function() {
                 drawPiece(ctx, board, board.coordinates[board.promotionConfigs[pConfig].spriteCoord], strToDrawPos(configSquares[pConfig]), sqSize);
             }
         }
+    }
+
+    // 
+    // All functions & classes related to the logic of piece movement
+    // 
+
+    function returnOpponentEye(e){ //returns opponent's eye
+        return ((e=="white") ? "black" : "white");
+    }
+
+    function isItMyTurn(){ //returns true if it a player's turn according to eye and board move
+        return (eye == (board.moveNb % 2 == 0 ? "white" : "black"));
+    }
+
+    function isKingInCheck(board, state, colour){ //checks if king with in check, returns false or object {positionStr:value} if true, colour arg is the king's colour (w o)
+        var occupancy;
+        var isInCheck = false;
+        var kingPos;
+        var piece;
+        var moves;
+        var attackMove;
+
+        for(var pieceIndex in state.pieces){ //get king position 
+            piece = state.pieces[pieceIndex];
+            if(piece.colour == colour && piece.alive && piece.type=="king"){
+                kingPos = piece.positionStr;
+                break;
+            }
+        }
+
+        occupancy = board.getSquareOccupancy(state, returnOpponentEye(colour)); //get coords of all pieces on board
+
+        for(var pieceIndex in state.pieces){ //if piece can attack the king then it is in check
+            piece = state.pieces[pieceIndex];
+            if(piece.colour==returnOpponentEye(colour) && piece.alive){ 
+                moves = board.getPieceMoves(piece, occupancy[0], occupancy[1]); 
+                for(var moveIndex in moves.canAttack){ 
+                    attackMove = moves.canAttack[moveIndex];
+                    if(attackMove == kingPos){
+                        isInCheck=true;
+                        break;
+                    }
+                }
+            }
+            if(isInCheck==true){
+                break;
+            }
+        }
+
+        if(isInCheck){
+            return {
+                positionStr: kingPos
+            }
+        }else{
+            return false;
+        }
+    }
+
+    function deepCopyState(state){ //returns deep copy of board state
+        var newState = {"gameMode":state.gameMode,"moveNb":state.moveNb,"check":state.check,"lastMove":state.lastMove, pieces:[]}
+        for(var piece in state.pieces){
+            newState.pieces.push(
+                {
+                "pid": state.pieces[piece].pid,
+                "alive": state.pieces[piece].alive,
+                "numberMoves": state.pieces[piece].numberMoves,
+                "positionStr": state.pieces[piece].positionStr,
+                "positionCoord": state.pieces[piece].positionCoord,
+                "originalType": state.pieces[piece].originalType,
+                "type": state.pieces[piece].type,
+                "colour": state.pieces[piece].colour,
+                "spriteCoord": state.pieces[piece].spriteCoord
+            })  
+        }
+            return newState;
     }
 
     class Board{ //superclass that holds board variables and validates board events
@@ -567,54 +583,15 @@ $( document ).ready(function() {
         }
     }
 
-    function loader(board, loadImg, allDone) { //used for executing the code only once images have been received
-        var count = board.imageSrcs.length;
-        var finishedLoadImg = (board, i)=>{
-            count--;
-            if (0 == count) {
-                allDone(board);
-                return;
-            }
-        };
-
-        for (var i in board.imageSrcs){
-            loadImg(board, i, finishedLoadImg);
-        }
-    }
-
-    function loadImage(board, i, onComplete) { //works in cooperation with loader
-        var onLoad = function (event) {
-            event.target.removeEventListener("load", onLoad);
-            var re = /([\w\d_-]*)\.?[^\\\/]*$/i;
-            var type = event.target.src.match(re)[1];
-            if(type == "pieces"){
-                board.images.pieces = event.target;
-            }else if(type == "sideboard"){
-                board.images.sideboard = event.target;
-            }
-            else{
-                board.images.board = event.target;
-            }
-            onComplete(board, i);
-        }
-        var img = new Image();
-        img.addEventListener("load", onLoad, false);
-        img.src = board.imageSrcs[i];
-    } 
+    // 
+    // All functions related to canvas cursor events
+    // 
 
     function getCursorPosition(event, nbSqPSideX){ //gets cursor position when mouse is pressed on canvas
         var rect = canvas.getBoundingClientRect();
         var realSqSize = $("#chesscreator").width() / nbSqPSideX;
         var position = [Math.floor((event.clientX - rect.left)/realSqSize), Math.floor((event.clientY - rect.top)/realSqSize)];
         return position
-    }
-
-    function returnOpponentEye(e){ //returns opponent's eye
-        return ((e=="white") ? "black" : "white");
-    }
-
-    function isItMyTurn(){ //returns true if it a player's turn according to eye and board move
-        return (eye == (board.moveNb % 2 == 0 ? "white" : "black"));
     }
 
     function keyDownUtils(e){ //used to navigate through gamestates and change point of view
@@ -796,6 +773,10 @@ $( document ).ready(function() {
         } 
     }
     
+    //
+    // The main function
+    //
+
     function startEngine(board){ //generate valid moves for each piece if game isn't stalemate/mate.
         hasMove = false;
         if(isItMyTurn()){
@@ -844,7 +825,46 @@ $( document ).ready(function() {
         draw(board, board.moveNb);
     }
 
+    // 
+    // All functions related to loading images
+    // 
 
+    function loader(board, loadImg, allDone) { //used for executing the code only once images have been received
+        var count = board.imageSrcs.length;
+        var finishedLoadImg = (board, i)=>{
+            count--;
+            if (0 == count) {
+                allDone(board);
+                return;
+            }
+        };
+
+        for (var i in board.imageSrcs){
+            loadImg(board, i, finishedLoadImg);
+        }
+    }
+
+    function loadImage(board, i, onComplete) { //works in cooperation with loader
+        var onLoad = function (event) {
+            event.target.removeEventListener("load", onLoad);
+            var re = /([\w\d_-]*)\.?[^\\\/]*$/i;
+            var type = event.target.src.match(re)[1];
+            if(type == "pieces"){
+                board.images.pieces = event.target;
+            }else if(type == "sideboard"){
+                board.images.sideboard = event.target;
+            }
+            else{
+                board.images.board = event.target;
+            }
+            onComplete(board, i);
+        }
+        var img = new Image();
+        img.addEventListener("load", onLoad, false);
+        img.src = board.imageSrcs[i];
+    } 
+
+    
     board = new YourChessVariant(eyeView);
 
 
