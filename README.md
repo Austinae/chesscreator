@@ -1,6 +1,9 @@
 # chesscreator
 **Version 1.0.0**
-<img style="width:50px;" aligne="left" src="https://i.ibb.co/c2rsWsS/chesscreator.png" alt="chesscreator logo" border="0">
+
+<br />
+
+<img style="width:100px;" src="https://i.ibb.co/c2rsWsS/chesscreator.png" alt="chesscreator logo" border="0">
 
 <br />
 
