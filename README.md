@@ -1,6 +1,6 @@
 <img style="width:250px;" src="https://i.ibb.co/c2rsWsS/chesscreator.png" alt="chesscreator logo" border="0">
 
-# chesscreator
+# [chesscreator](https://austinae.github.io/chesscreator/)
 
 **Version 1.0.0**
 
