@@ -13,8 +13,8 @@ A javascript library to easily integrate a chess board with custom chess piece r
 ## Table of Contents  
 [Features](#features)  
 [Tutorial](#tutorial)  
-[Contributors](#contributors)
-[License](#license)
+[Contributors](#contributors)  
+[License](#license)  
 
 ---
 <a name="features"/>
