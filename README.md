@@ -1,5 +1,7 @@
 <img style="width:250px;" src="https://i.ibb.co/c2rsWsS/chesscreator.png" alt="chesscreator logo" border="0">
+
 # chesscreator
+
 **Version 1.0.0**
 
 <br />
@@ -18,6 +20,7 @@ A javascript library to easily integrate a chess board with custom chess piece r
 <a name="features"/>
 
 ## Features
+
 * **Ease of use**, simply link the script, write down one canvas tag on you're ready to go.
 
 ```html
@@ -36,7 +39,8 @@ A javascript library to easily integrate a chess board with custom chess piece r
 </html>
 ```
 	
-* **Piece drawing & highlighting**, the GUI is delt with and is very user-friendly. Squares are highlighted to help the user know when a piece has been selected and where it can move. 
+* **Piece drawing & highlighting**, the GUI is delt with and is very user-friendly. Squares are highlighted to help the user know when a piece has been selected and where it can move.
+
 ![Image showing pieces being drawn on board and square highlighting][highlighting]
 
 *If someone could help me with the drag and drop feature that would be awesome, for now it is a click to select and click to drop, thank you 🙏*
@@ -50,6 +54,7 @@ generatePositions(pos, offsets, offsetType, myOccupiedSquares, opponentOccupiedS
 
 ---
 <a name="tutorial"/>
+
 ## Tutorial - Creating your own variant
 ### Files & folders
 * _chesscreator.js_, the template file which should be used to create your chess variant.
