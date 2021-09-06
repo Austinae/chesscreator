@@ -240,12 +240,14 @@ This being said, I wish you the best in your creative adventure!
 
 ---
 <a name="contributors"/>
+
 ## Contributors
 _I am looking for contributors so please dm [me][email]!_
 
 * [William Guerrand][website]
 ---
 <a name="license"/>
+
 ## License & copyright
 
 © [William Guerrand][website]	
