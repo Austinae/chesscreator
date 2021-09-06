@@ -1,9 +1,6 @@
+<img style="width:250px;" src="https://i.ibb.co/c2rsWsS/chesscreator.png" alt="chesscreator logo" border="0">
 # chesscreator
 **Version 1.0.0**
-
-<br />
-
-<img style="width:250px;" src="https://i.ibb.co/c2rsWsS/chesscreator.png" alt="chesscreator logo" border="0">
 
 <br />
 
@@ -11,7 +8,7 @@ A javascript library to easily integrate a chess board with custom chess piece r
 
 ---
 
-##### Table of Contents  
+## Table of Contents  
 [Features](#features)  
 [Tutorial](#tutorial)  
 [Contributors](#contributors)
@@ -19,8 +16,10 @@ A javascript library to easily integrate a chess board with custom chess piece r
 
 ---
 <a name="features"/>
+
 ## Features
 * **Ease of use**, simply link the script, write down one canvas tag on you're ready to go.
+
 ```html
 <!DOCTYPE html>
 <html>
