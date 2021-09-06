@@ -117,7 +117,7 @@ For simplicity group all your piece images in one file like so:
 
 <br />
 
-If you aren't a designer, nothing to worry, simply download copyright-free images from <a href="https://commons.wikimedia.org/w/index.php?search=chess+svg&title=Special:MediaSearch&go=Go&type=image">here</a> or <a href="https://gitlab.com/zulban/chesscraft-creative-commons">here</a> for example and use a tool such as aspose image <a href="https://products.aspose.app/imaging/image-merge">merger</a> or a <a href="https://www.codeandweb.com/free-sprite-sheet-packer">sprite sheet packer</a>.
+If you aren't a designer, nothing to worry, simply download copyright-free images from <a href="https://commons.wikimedia.org/w/index.php?search=chess+svg&title=Special:MediaSearch&go=Go&type=image">here</a> or <a href="https://gitlab.com/zulban/chesscraft-creative-commons">here</a> for example and use a tool such as <a href="https://products.aspose.app/imaging/image-merge">aspose image merger</a> or a <a href="https://www.codeandweb.com/free-sprite-sheet-packer">sprite sheet packer</a> to bring them together.
 
 	
 
