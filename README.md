@@ -59,7 +59,7 @@ A javascript library to easily integrate a chess board with custom chess piece r
 
 <br />
 
-*If someone could help me with the drag and drop feature that would be awesome, for now it is a click to select and click to drop, thank you 🙏*
+*If someone could help me with the drag and drop feature that would be awesome, for now it is a click to select and click to drop, thank you! 🙏*
 
 * **Awesome scalable code**, when creating your own game the _Board_ class which your class will inherit has a lot of useful functions. the most notable one is generatePositions which takes the following arguments:
 
@@ -67,7 +67,16 @@ A javascript library to easily integrate a chess board with custom chess piece r
 generatePositions(pos, offsets, offsetType, myOccupiedSquares, opponentOccupiedSquares, playingField, attacksOnOffset=true, attackOver=false)
 ```
 
+    * pos: don't touch, keep piece.positionCoord.
+    * offsets: an array of coordinates that describe the piece's movement. Format is [x, y]. For example a white pawn moves forwards so add [1, 0] to it as it moves up. However black pawn moves down as the engine logic is always from white's perspective so it would be [-1, 0]. To make the distinction you can add logic in this section such that you verify if a piece has the colour *white* or *black*.
+    * offsetType: can be *singular* or *plural*. *singular* keeps the offsets intact and the ones you entered will be the only valid moves for that piece. *plural* extends the offsets such if you enter [1, 0] it will follow that direction until the engine reaches an out of bounds square i.e. it will add [2, 0], [3, 0], [4, 0]... This is great for pieces like the rook and bishop.
+    * myOccupiedSquares: don't touch, keep myOccupiedSquares.
+    * opponentOccupiedSquares: don't touch, keep opponentOccupiedSquares.
+    * playingField: format is [x Min, x Max, y Min, y Max]. If a piece can move around the whole board then it should be [-1, this.nbSqPSideX, -1, this.nbSqPSideY] otherwise change it as you wish.
+    * attacksOnOffset: a boolean. If true the piece can capture in the direction of movement but can't move beyong that. If false the piece can't capture in the direction of movement and can't move beyong that.
+    * attackOver: a boolean. If true it will be able to 
 
+*If someone could help me to add a **walkOver** argument so that the piece can jump over X pieces and possibly the ability to capture but only after having jumped over two pieces or Y pieces that would be awesome it could add a lot more possibilities, thank you! 🙏*
 
 ---
 <a name="tutorial"/>
