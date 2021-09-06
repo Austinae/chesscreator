@@ -74,7 +74,7 @@ generatePositions(pos, offsets, offsetType, myOccupiedSquares, opponentOccupiedS
 * opponentOccupiedSquares: don't touch, keep opponentOccupiedSquares.
 * playingField: format is [x Min, x Max, y Min, y Max]. If a piece can move around the whole board then it should be [-1, this.nbSqPSideX, -1, this.nbSqPSideY] otherwise change it as you wish.
 * attacksOnOffset: a boolean. If true the piece can capture in the direction of movement but can't move beyong that. If false the piece can't capture in the direction of movement and can't move beyong that.
-* attackOver: a boolean. If true it will be able to 
+* attackOver: a boolean. If true it will be able to attack over another piece, otherwise it won't.
 
 *If someone could help me to add a **walkOver** argument so that the piece can jump over X pieces and possibly the ability to capture but only after having jumped over two pieces or Y pieces that would be awesome it could add a lot more possibilities, thank you! 🙏*
 
@@ -115,34 +115,34 @@ For simplicity group all your piece images in one file like so:
 Open _chesscreator.js_, most functions are utility functions so pay attention to those with stars as you may need to modify them to get more functionality from the library:
 
 * **Drawing elements on canvas**
-	* function isStrInArray(), a utility function
-	* function isArrayInArray(), a utility function
-	* function arraysEqual(), a utility function
-	* function getPromotedStrs(), a utility function
-	* function strToDrawPos(), a utility function
-	* function strToPos(), a utility function
-	* function drawPosToStr(), a utility function
-	* function posToStr(), a utility function
-	* function drawPiece(), a utility function
-	* function drawSquare(), a utility function
-	* function drawSbPieceAndDecoration(), a utility function
-	* function draw(), the main function which draws on canvas the background board, highlight squares to help the user (previous move, legal moves, king in check), pieces, promotion options
+	* function isStrInArray(), a utility function.
+	* function isArrayInArray(), a utility function.
+	* function arraysEqual(), a utility function.
+	* function getPromotedStrs(), a utility function.
+	* function strToDrawPos(), a utility function.
+	* function strToPos(), a utility function.
+	* function drawPosToStr(), a utility function.
+	* function posToStr(), a utility function.
+	* function drawPiece(), a utility function.
+	* function drawSquare(), a utility function.
+	* function drawSbPieceAndDecoration(), a utility function.
+	* function draw(), the main function which draws on canvas the background board, highlight squares to help the user (previous move, legal moves, king in check), pieces, promotion options.
 * **Piece movement logic**
-	* returnOpponentEye(), a utility function
-	* isItMyTurn(), a utility function
-	* isKingInCheck(), a utility function
-	* deepCopyState(), a utility function
-	* ⭐Board, a class with the chess engine logic
-	* ⭐YourChessVariant, a class inherited from Board where you implement your own chess variant 
+	* returnOpponentEye(), a utility function.
+	* isItMyTurn(), a utility function.
+	* isKingInCheck(), a utility function.
+	* deepCopyState(), a utility function.
+	* ⭐Board, a class with the chess engine logic.
+	* ⭐YourChessVariant, a class inherited from Board where you implement your own chess variant .
 * **Canvas cursor logic**
-	* getCursorPosition(), a utility function
-	* keyDownUtils(), a utility function
-	* ⭐boardEventListener(), the main function which deals with all canvas events
+	* getCursorPosition(), a utility function.
+	* keyDownUtils(), a utility function.
+	* ⭐boardEventListener(), the main function which deals with all canvas events.
 * **Main**
-	* startEngine(), the main function which generates valid moves for each piece
-* **Loading images**
-	* loader(), a utility function
-	* loadImage(), a utility function
+	* startEngine(), the main function which generates valid moves for each piece.
+* **Loading images**.
+	* loader(), a utility function.
+	* loadImage(), a utility function.
 
 ### Step 4 - Filling in the gaps
 If you are creating a simple chess variant all you should really be touching is the YourChessVariant class by filling in the gaps:
@@ -243,7 +243,7 @@ For the piece coordinates, it should follow this format:
 
 <br />
 
-To add more complex logic you can modify the main Board class and the boardEventListener to control more advanced piece moves
+To add more complex logic you can modify the main Board class and the boardEventListener to control more advanced piece moves.
 
 This being said, I wish you the best in your creative adventure!
 
@@ -260,7 +260,7 @@ _I am looking for contributors so please dm [me][email]!_
 ## License & copyright
 
 © [William Guerrand][website]	
-Licensed under the [MIT LICENSE](LICENSE) 
+Licensed under the [MIT LICENSE](LICENSE).
 
 I would like to mention that jquery is being used, read more about their license [here][license_jquery].
 
