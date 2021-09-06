@@ -77,8 +77,12 @@ generatePositions(pos, offsets, offsetType, myOccupiedSquares, opponentOccupiedS
 
 *If someone could help me to add a **walkOver** argument so that the piece can jump over X pieces and possibly the ability to capture but only after having jumped over two pieces or Y pieces that would be awesome it could add a lot more possibilities, thank you! 🙏*
 
+* **Gameplay navigation**
 
+<kbd>W</kbd> / <kbd>B</kbd> let you see from the other player's perspective.
 
+<kbd>←</kbd> / <kbd>↓</kbd> lets you see less recent moves.
+<kbd>↑</kbd> / <kbd>→</kbd> lets you see most recent moves.
 
 ---
 <a name="tutorial"/>
