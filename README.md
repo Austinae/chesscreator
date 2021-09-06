@@ -41,8 +41,23 @@ A javascript library to easily integrate a chess board with custom chess piece r
 	
 * **Piece drawing & highlighting**, the GUI is delt with and is very user-friendly. Squares are highlighted to help the user know when a piece has been selected and where it can move.
 
-<img style="width: 300px;" align=center src="https://i.ibb.co/mGbBs2W/Capture.jpg" alt="Capture" border="0">
-<img style="width: 300px;" align=center src="https://i.ibb.co/B3CG263/Capture.jpg" alt="Capture" border="0">
+### Movement
+
+<img style="width: 300px;" src="https://i.ibb.co/mGbBs2W/Capture.jpg" alt="Capture" border="0">
+
+### Attack
+
+<img style="width: 300px;" src="https://i.ibb.co/B3CG263/Capture.jpg" alt="Capture" border="0">
+
+### King in check
+
+<img style="width: 300px;" src="https://i.ibb.co/y8jw9W1/Capture.jpg" alt="Capture" border="0">
+
+### Promoting
+
+<img style="width: 300px;" src="https://i.ibb.co/JzRYNxb/Capture.jpg" alt="Capture" border="0">
+
+<br />
 
 *If someone could help me with the drag and drop feature that would be awesome, for now it is a click to select and click to drop, thank you 🙏*
 
@@ -51,6 +66,7 @@ A javascript library to easily integrate a chess board with custom chess piece r
 ```js
 generatePositions(pos, offsets, offsetType, myOccupiedSquares, opponentOccupiedSquares, playingField, attacksOnOffset=true, attackOver=false)
 ```
+
 
 
 ---
