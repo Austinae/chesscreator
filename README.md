@@ -117,6 +117,11 @@ For simplicity group all your piece images in one file like so:
 
 <br />
 
+If you aren't a designer, nothing to worry, simply download copyright-free images and use a tool such as aspose image merger:
+
+<a href="https://products.aspose.app/imaging/image-merge">
+	
+
 ### Step 3 - The script
 Open _chesscreator.js_, most functions are utility functions so pay attention to those with stars as you may need to modify them to get more functionality from the library:
 
