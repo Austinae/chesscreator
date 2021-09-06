@@ -117,9 +117,8 @@ For simplicity group all your piece images in one file like so:
 
 <br />
 
-If you aren't a designer, nothing to worry, simply download copyright-free images and use a tool such as aspose image merger:
+If you aren't a designer, nothing to worry, simply download copyright-free images and use a tool such as aspose image <a href="https://products.aspose.app/imaging/image-merge">merger</a>.
 
-<a href="https://products.aspose.app/imaging/image-merge">
 	
 
 ### Step 3 - The script
