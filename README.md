@@ -6,7 +6,7 @@
 
 <br />
 
-A javascript library to easily integrate a chess board with custom chess piece rules into your website. Working examples for international chess and xiangqi is included and can be used for that sole purpose if you wish as well.
+A javascript library to easily integrate a chess board with custom chess piece rules into your website. Working examples for international chess and xiangqi are included and can be used for that sole purpose if you wish to as well.
 
 ---
 
